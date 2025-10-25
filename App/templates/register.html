@@ -1,0 +1,151 @@
+{% extends "layout.html" %} 
+{% block content %}
+<h2>Register</h2>
+<form method="POST" class="register_form">
+  {{ form.hidden_tag() }}
+
+  <div class="form_group">
+    <div class="label_wrapper">
+      {{ form.username.label(class="form_label") }}
+      <i class="fas fa-user label_icon"></i>
+    </div>
+    {{ form.username(class="form_input", placeholder="Username") }}
+  </div>
+
+  <div class="form_group">
+    <div class="label_wrapper">
+      {{ form.email.label(class="form_label") }}
+      <i class="fas fa-envelope label_icon"></i>
+    </div>
+    {{ form.email(class="form_input", placeholder="Email") }}
+  </div>
+
+  <div class="form_group password_group">
+    <div class="label_wrapper">
+      {{ form.password.label(class="form_label") }}
+      <i class="fas fa-lock label_icon"></i>
+    </div>
+    <div class="input_with_icon">
+      {{ form.password(class="form_input", id="password", placeholder="Password") }}
+      <i class="fas fa-eye toggle_password" id="togglePassword"></i>
+    </div>
+  </div>
+
+  <div class="form_group password_group">
+    <div class="label_wrapper">
+      {{ form.confirm_password.label(class="form_label") }}
+      <i class="fas fa-lock label_icon"></i>
+    </div>
+    <div class="input_with_icon">
+      {{ form.confirm_password(class="form_input", id="confirm_password", placeholder="Confirm Password") }}
+      <i class="fas fa-eye toggle_password" id="toggleConfirm"></i>
+    </div>
+  </div>
+
+  <div class="form_group">
+    {{ form.submit(class="btn_register") }}
+  </div>
+</form>
+
+<style>
+.register_form {
+    max-width: 400px;
+    margin: 30px auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+    font-family: Arial, sans-serif;
+}
+
+h2 {
+    text-align: center;
+    color: #4caf50;
+    margin-bottom: 25px;
+}
+
+.form_group {
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.label_wrapper {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 6px; 
+    margin-bottom: 5px;
+}
+
+.label_icon {
+    color: #4caf50;
+    font-size: 16px;
+}
+
+.form_input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 14px;
+    box-sizing: border-box;
+    transition: border-color 0.3s;
+}
+
+.form_input:focus {
+    border-color: #4caf50;
+    outline: none;
+}
+
+.input_with_icon {
+    position: relative;
+}
+
+.input_with_icon .toggle_password {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #4caf50;
+}
+
+.btn_register {
+    width: 100%;
+    padding: 10px;
+    background: #4caf50;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s;
+}
+
+.btn_register:hover {
+    background: #388e3c;
+    transform: scale(1.03);
+}
+</style>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const togglePassword = document.getElementById("togglePassword");
+    const passwordInput = document.getElementById("password");
+    togglePassword.addEventListener("click", () => {
+        const type = passwordInput.getAttribute("type") === "password" ? "text" : "password";
+        passwordInput.setAttribute("type", type);
+        togglePassword.classList.toggle("fa-eye-slash");
+    });
+
+    const toggleConfirm = document.getElementById("toggleConfirm");
+    const confirmInput = document.getElementById("confirm_password");
+    toggleConfirm.addEventListener("click", () => {
+        const type = confirmInput.getAttribute("type") === "password" ? "text" : "password";
+        confirmInput.setAttribute("type", type);
+        toggleConfirm.classList.toggle("fa-eye-slash");
+    });
+});
+</script>
+{% endblock %}

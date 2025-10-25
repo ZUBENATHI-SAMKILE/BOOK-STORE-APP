@@ -1,0 +1,187 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<style>
+    h1 {
+        text-align: center;
+        margin-top: 30px;
+        font-size: 36px;
+        color: #4caf50;
+        font-family: 'Arial', sans-serif;
+    }
+
+    .search_container {
+        display: flex;
+        justify-content: center;
+        margin: 30px 0;
+    }
+
+    .search_input {
+        width: 50%;
+        padding: 10px 15px;
+        font-size: 16px;
+        border: 2px solid #4caf50;
+        border-radius: 8px;
+        outline: none;
+        transition: all 0.3s;
+    }
+
+    .search_input:focus {
+        border-color: #388e3c;
+        box-shadow: 0 0 5px rgba(56,142,60,0.5);
+    }
+
+    .books_container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 30px;
+        padding: 0 20px 50px;
+    }
+
+    .book_card {
+        background-color: #fff;
+        width: 250px;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        transition: transform 0.3s, box-shadow 0.3s;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .book_card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    }
+
+    .book_image {
+        width: 100%;
+        height: 180px;
+        object-fit: cover;
+    }
+
+    .book_body {
+        padding: 15px;
+        text-align: center;
+    }
+
+    .book_title {
+        font-size: 18px;
+        font-weight: bold;
+        margin: 10px 0 5px;
+    }
+
+    .book_author {
+        font-size: 14px;
+        color: #777;
+        margin-bottom: 5px;
+    }
+
+    .book_price {
+        font-size: 16px;
+        color: #4caf50;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    .book_btn {
+        background-color: #4caf50;
+        color: white;
+        padding: 8px 15px;
+        border-radius: 6px;
+        font-size: 14px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        display: inline-block;
+        text-decoration: none;
+    }
+
+    .book_btn:hover {
+        background-color: #388e3c;
+    }
+
+    .no_books {
+        text-align: center;
+        font-size: 18px;
+        color: #999;
+        margin-top: 20px;
+    }
+
+    @media(max-width: 768px){
+        .search_input {
+            width: 80%;
+        }
+
+        .book_card {
+            width: 200px;
+        }
+    }
+</style>
+
+<h1>Featured Books</h1>
+
+<div class="search_container">
+    <input type="text" id="liveSearch" class="search_input" placeholder="Search books...">
+</div>
+
+<div class="books_container" id="booksContainer">
+  {% for book in books %}
+    <div class="book_card">
+        <img src="{{ url_for('static', filename='Book_Image/' + (book.image_file or 'default_book.jpg')) }}" class="book_image">
+        <div class="book_body">
+            <div class="book_title">{{ book.title }}</div>
+            <div class="book_author">{{ book.author }}</div>
+            <div class="book_price">&#8377;{{ book.price }}</div>
+            <a href="{{ url_for('main.book_detail', book_id=book.id) }}" class="book_btn">Details</a>
+        </div>
+    </div>
+  {% endfor %}
+</div>
+
+<script>
+function bindQuantityButtons() {
+    document.querySelectorAll('.quantity_controls').forEach(control => {
+        const bookId = control.dataset.bookId;
+        const minusBtn = control.querySelector('.minus_btn');
+        const plusBtn = control.querySelector('.plus_btn');
+        const qtySpan = control.querySelector('.qty');
+
+        minusBtn.addEventListener('click', () => updateCart(bookId, 'remove', qtySpan, minusBtn));
+        plusBtn.addEventListener('click', () => updateCart(bookId, 'add', qtySpan, minusBtn));
+    });
+}
+
+bindQuantityButtons();
+
+function updateCart(bookId, action, qtySpan, minusBtn) {
+    fetch(`/cart_update/${bookId}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: action })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if(data.success){
+            qtySpan.innerText = data.quantity;
+            minusBtn.disabled = data.quantity === 0;
+        }
+    });
+}
+
+
+const searchInput = document.getElementById("liveSearch"); // Live Search 
+const booksContainer = document.getElementById("booksContainer");
+
+searchInput.addEventListener("input", function() {
+    const query = this.value.trim();
+    fetch(`/search_books?q=${query}`)
+        .then(res => res.text())
+        .then(html => {
+            booksContainer.innerHTML = html;
+            bindQuantityButtons();
+        });
+});
+</script>
+{% endblock %}

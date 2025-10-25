@@ -1,0 +1,125 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<style>
+
+h2 {
+    text-align: center;
+    font-size: 32px;
+    color: #4caf50;
+    margin: 30px 0;
+    font-family: Arial, sans-serif;
+}
+
+h2 i {
+    margin-right: 8px;
+}
+
+.search_container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.search_input {
+    width: 300px;
+    padding: 8px 12px;
+    font-size: 16px;
+    border: 2px solid #4caf50;
+    border-radius: 8px;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+.search_input:focus {
+    border-color: #2196f3;
+}
+
+.books_grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 30px;
+    padding: 0 20px 50px;
+}
+
+@media(max-width: 768px){
+    .search_input {
+        width: 70%;
+    }
+}
+
+@media(max-width: 480px){
+    .search_input {
+        width: 90%;
+    }
+}
+</style>
+
+<h2><i class="fas fa-book"></i> All Books</h2>
+
+<div class="search_container mb-3">
+    <input type="text" id="liveSearch" class="search_input form-control" placeholder="Search books...">
+</div>
+
+<div class="books_grid row" id="booksContainer">
+  {% for book in books %}
+    {% include 'book_card.html' %}
+  {% endfor %}
+</div>
+
+<script>
+function bindQuantityButtons() {
+    document.querySelectorAll('.quantity_controls').forEach(control => {
+        const bookId = control.dataset.bookId;
+        const minusBtn = control.querySelector('.minus_btn');
+        const plusBtn = control.querySelector('.plus_btn');
+        const qtySpan = control.querySelector('.qty');
+
+        minusBtn.addEventListener('click', () => updateCart(bookId, 'remove', qtySpan, minusBtn));
+        plusBtn.addEventListener('click', () => updateCart(bookId, 'add', qtySpan, minusBtn));
+    });
+}
+
+bindQuantityButtons();
+
+function updateCart(bookId, action, qtySpan, minusBtn) {
+    fetch(`/cart_update/${bookId}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: action })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if(data.success){
+            qtySpan.innerText = data.quantity;
+            minusBtn.disabled = data.quantity === 0;
+        }
+    });
+}
+
+
+const searchInput = document.getElementById("liveSearch"); //Live Search
+const booksContainer = document.getElementById("booksContainer");
+
+searchInput.addEventListener("input", function() {
+    const query = this.value.trim();
+    fetch(`/search_books?q=${query}`)
+        .then(res => res.text()) 
+        .then(html => {
+            booksContainer.innerHTML = html;
+            bindQuantityButtons(); 
+        });
+});
+
+
+document.addEventListener("DOMContentLoaded", () => { // animation 
+    const cards = document.querySelectorAll(".book_card");
+    cards.forEach((card, index) => {
+        card.style.animationDelay = `${index * 0.1}s`;
+    });
+});
+</script>
+
+
+{% endblock %}

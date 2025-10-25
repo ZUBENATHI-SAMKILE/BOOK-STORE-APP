@@ -1,0 +1,158 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="account_container">
+  <h2 class="account_title"><i class="fas fa-user-circle"></i> My Account</h2>
+
+  <div class="account_grid">
+    <div class="account_image_section">
+      <img src="{{ image_file }}" alt="Profile Picture" class="profile_image">
+    </div>
+
+    <div class="account_form_section">
+      <form method="POST" enctype="multipart/form-data" class="account_form">
+        {{ form.hidden_tag() }}
+        
+        <div class="form_group">
+          <label for="username"><i class="fas fa-user"></i> {{ form.username.label.text }}</label>
+          {{ form.username(class="input_field") }}
+        </div>
+
+        <div class="form_group">
+          <label for="email"><i class="fas fa-envelope"></i> {{ form.email.label.text }}</label>
+          {{ form.email(class="input_field") }}
+        </div>
+
+        <div class="form_group">
+          <label for="address"><i class="fas fa-map-marker-alt"></i> {{ form.address.label.text }}</label>
+          {{ form.address(class="input_field") }}
+        </div>
+
+        <div class="form_group">
+          <label for="state"><i class="fas fa-flag"></i> {{ form.state.label.text }}</label>
+          {{ form.state(class="input_field") }}
+        </div>
+
+        <div class="form_group">
+          <label for="pincode"><i class="fas fa-map-pin"></i> {{ form.pincode.label.text }}</label>
+          {{ form.pincode(class="input_field") }}
+        </div>
+
+        <div class="form_group">
+          <label for="picture"><i class="fas fa-camera"></i> {{ form.picture.label.text }}</label>
+          {{ form.picture(class="input_field") }}
+        </div>
+
+        <button type="submit" class="btn_submit">
+          <i class="fas fa-save"></i> Update Account
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<style>
+  .account_container {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 30px;
+    background: #f5f5f5;
+    border-radius: 12px;
+    color: #f5f5f5;
+    box-shadow: 0 0 15px rgba(0,0,0,0.6);
+    animation: fade_in 0.7s ease;
+  }
+
+  .account_title {
+    text-align: center;
+    font-size: 26px;
+    color: #4CAF50;
+    margin-bottom: 30px;
+  }
+
+  .account_grid {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 30px;
+    align-items: start;
+  }
+
+  .account_image_section {
+    text-align: center;
+  }
+
+  .profile_image {
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    border: 4px solid #81C784;
+    object-fit: cover;
+    transition: transform 0.3s;
+  }
+
+  .profile_image:hover {
+    transform: scale(1.05);
+  }
+
+  .account_form {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .form_group {
+    margin-bottom: 20px;
+  }
+
+  .form_group label {
+    display: block;
+    margin-bottom: 6px;
+    color: #009688;
+    font-weight: bold;
+  }
+
+  .input_field {
+    width: 100%;
+    padding: 10px;
+    border-radius: 6px;
+    border: none;
+    background:  #fff;
+    color:  #2a2a2a;
+    outline: none;
+    transition: 0.3s;
+  }
+
+  .input_field:focus {
+    border: 1px solid #00adb5;
+    background: #fff;
+  }
+
+  .btn_submit {
+    background: #3e8e41;
+    color: #fff;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: 0.3s;
+  }
+
+  .btn_submit:hover {
+    background: #4CAF50;
+    transform: scale(1.05);
+  }
+
+  @keyframes fade_in {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 768px) {
+    .account_grid {
+      grid-template-columns: 1fr;
+    }
+    .account_container {
+      padding: 20px;
+    }
+  }
+</style>
+{% endblock %}

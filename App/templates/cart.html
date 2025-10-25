@@ -1,0 +1,193 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<h2><i class="fas fa-cart-shopping"></i> Your Cart</h2>
+
+{% if not carts %}
+<div class="alert alert_info">Your cart is empty.</div>
+{% else %}
+<table class="cart_table">
+  <thead>
+    <tr>
+      <th>Picture</th>
+      <th>Book Name</th>
+      <th>Price</th>
+      <th>Qty</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for c in carts %}
+    <tr class="cart_row" id="cart-row-{{ c.id }}">
+      <td><img src="{{ url_for('static', filename='Book_Image/' + (c.cartbook.image_file or 'default_book.jpg')) }}" class="book_image"></td>
+      <td>{{ c.cartbook.title }}</td>
+      <td>&#8377;{{ c.cartbook.price }}</td>
+      <td>{{ c.quantity }}</td>
+      <td>
+        <button class="btn btn_danger btn_sm delete_btn" data-cart-id="{{ c.id }}">Delete</button>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+<div class="total_amount">Total: <span id="cartTotal" style="color:#4caf50; font-weight:bold;">&#8377;{{ total }}</span></div>
+<a href="{{ url_for('main.checkout') }}" class="checkout_btn">
+    <i class="fas fa-credit-card"></i> Checkout
+</a>
+{% endif %}
+
+<style>
+    h2 {
+        text-align: center;
+        font-size: 32px;
+        color: #4caf50;
+        margin: 30px 0;
+        font-family: Arial, sans-serif;
+    }
+
+    .cart_container {
+        max-width: 900px;
+        margin: 0 auto 50px;
+        padding: 0 20px;
+        font-family: Arial, sans-serif;
+    }
+
+    .alert_info {
+      padding: 10px 15px;
+      border-radius: 4px;
+      margin: 10px 0;
+      background: #d9edf7;
+      color: #31708f;
+    }
+    .book_image {
+        width: 70%;
+        height: 100px;
+        object-fit: cover;
+    }
+
+    /* CART TABLE */
+    .cart_table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+
+    .cart_table th, .cart_table td {
+        padding: 12px 15px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .cart_table th {
+        background-color: #4caf50;
+        color: white;
+        font-weight: bold;
+    }
+
+    .cart_table tr {
+        opacity: 0;
+        transform: translateX(-20px);
+        animation: slide_fade_in 0.5s forwards;
+    }
+
+    .cart_table tr:hover {
+        background-color: #f1f1f1;
+    }
+
+    .delete_btn {
+        background-color: #f44336;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        padding: 5px 10px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: background-color 0.3s;
+    }
+
+    .delete_btn:hover {
+        background-color: #d32f2f;
+    }
+
+    .total_amount {
+        text-align: right;
+        font-size: 20px;
+        font-weight: bold;
+        color: #4caf50;
+        margin-top: 15px;
+    }
+
+    .checkout_btn {
+        display: inline-block;
+        background-color: #4caf50;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 6px;
+        font-size: 16px;
+        font-weight: bold;
+        text-decoration: none;
+        margin-top: 20px;
+        transition: background-color 0.3s;
+    }
+
+    .checkout_btn:hover {
+        background-color: #388e3c;
+    }
+    .total_amount {
+        text-align: right;
+        font-size: 22px;
+        font-weight: bold;
+        color: #4caf50; 
+        margin-top: 15px;
+    }
+
+    @keyframes slide_fade_in {
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    @media(max-width: 768px){
+        .cart_table th, .cart_table td {
+            padding: 8px 10px;
+        }
+
+        .checkout_btn {
+            width: 100%;
+            text-align: center;
+        }
+    }
+</style>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const deleteButtons = document.querySelectorAll('.delete_btn');
+
+    document.querySelectorAll(".cart_row").forEach((row, index) => {
+        setTimeout(() => row.classList.add("show"), index * 100);
+    });
+
+    
+    deleteButtons.forEach(btn => { // Delete button
+        btn.addEventListener('click', () => {
+            const cartId = btn.dataset.cartId;
+
+            fetch(`/delete_cart/${cartId}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    const row = document.getElementById(`cart-row-${cartId}`);
+                    row.remove();
+                    document.getElementById('cartTotal').innerText = data.total;
+                }
+            });
+        });
+    });
+});
+</script>
+
+{% endblock %}

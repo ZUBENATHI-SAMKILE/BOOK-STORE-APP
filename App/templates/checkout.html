@@ -1,0 +1,223 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<style>
+h2, h3 {
+    font-family: 'Arial', sans-serif;
+    color: #4caf50;
+    text-align: center;
+}
+
+h2 {
+    font-size: 32px;
+    margin: 30px 0;
+}
+
+h2 i {
+    margin-right: 8px;
+}
+
+h3 {
+    font-size: 24px;
+    margin-top: 40px;
+}
+
+.checkout_container {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 30px;
+    background: linear-gradient(145deg, #ffffff, #f3f3f3);
+    border-radius: 20px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    font-family: 'Arial', sans-serif;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.checkout_container:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+}
+
+.checkout_table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.checkout_table th, 
+.checkout_table td {
+    padding: 12px 15px;
+    text-align: left;
+}
+
+.checkout_table th {
+    background-color: #4caf50;
+    color: white;
+    font-weight: bold;
+}
+
+.checkout_table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.checkout_table tr:hover {
+    background-color: #e0f7e9;
+}
+
+.total_amount {
+    text-align: right;
+    font-size: 22px;
+    font-weight: bold;
+    margin-top: 20px;
+    color: #2e7d32;
+}
+
+.payment_card {
+    background: white;
+    padding: 25px 30px;
+    margin-top: 30px;
+    border-radius: 20px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.payment_card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+}
+
+.form_group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+}
+
+.form_group label {
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.form_group input {
+    padding: 10px 15px;
+    font-size: 16px;
+    border-radius: 12px;
+    border: 1.5px solid #ccc;
+    outline: none;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.form_group input:focus {
+    border-color: #4caf50;
+    box-shadow: 0 0 8px rgba(76, 175, 80, 0.3);
+}
+
+.confirm_btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background-color: #4caf50;
+    color: white;
+    padding: 12px 25px;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: bold;
+    text-decoration: none;
+    margin-top: 15px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s, box-shadow 0.3s;
+}
+
+.confirm_btn:hover {
+    background-color: #388e3c;
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+@media(max-width: 768px){
+    .checkout_container, .payment_card {
+        padding: 20px;
+    }
+
+    .confirm_btn, .form_group input {
+        width: 100%;
+    }
+}
+</style>
+
+<div class="checkout_container">
+    <h2><i class="fas fa-credit-card"></i> Checkout</h2>
+
+    <table class="checkout_table">
+        <thead>
+            <tr>
+                <th>Book</th>
+                <th>Price</th>
+                <th>Qty</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for c in carts %}
+            <tr>
+                <td>{{ c.cartbook.title }}</td>
+                <td>&#8377;{{ c.cartbook.price }}</td>
+                <td>{{ c.quantity }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="total_amount">
+        Total: <span>&#8377;{{ total }}</span>
+    </div>
+
+    <div class="payment_card">
+        <h3><i class="fas fa-lock"></i> Payment</h3>
+        <form id="paymentForm">
+            <div class="form_group">
+                <label>Card Number</label>
+                <input type="text" id="cardNumber" placeholder="1234 5678 9012 3456" required>
+            </div>
+            <div class="form_group">
+                <label>Expiry</label>
+                <input type="text" id="expiry" placeholder="MM/YY" required>
+            </div>
+            <div class="form_group">
+                <label>CVV</label>
+                <input type="text" id="cvv" placeholder="123" required>
+            </div>
+            <button type="submit" class="confirm_btn"><i class="fas fa-check-circle"></i> Confirm Order</button>
+        </form>
+        <div id="paymentMessage" style="margin-top:15px;"></div>
+    </div>
+</div>
+
+<script>
+document.getElementById('paymentForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    const cardNumber = document.getElementById('cardNumber').value;
+    const messageEl = document.getElementById('paymentMessage');
+
+    const lastDigit = parseInt(cardNumber[cardNumber.length-1]);
+    if(!isNaN(lastDigit) && lastDigit % 2 === 0){
+        fetch('/checkout', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ payment: 'success' })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if(data.success){
+                messageEl.innerHTML = `<p style="color:green;font-weight:bold;">Payment successful! Confirming order...</p>`;
+                window.location.href = data.redirect;
+            }
+        });
+    } else {
+        messageEl.innerHTML = `<p style="color:red;font-weight:bold;">Payment failed. Try another card.</p>`;
+    }
+});
+</script>
+
+{% endblock %}

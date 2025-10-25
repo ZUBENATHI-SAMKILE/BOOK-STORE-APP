@@ -1,0 +1,117 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<style>
+
+.book_detail_container {
+    display: flex;
+    flex-direction: row; 
+    align-items: flex-start;
+    gap: 30px;
+    padding: 40px 20px;
+    justify-content: center;
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.book_detail_image {
+    flex: 0 0 400px; 
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.book_detail_image img {
+    width: 100%;
+    height: auto;
+    border-radius: 12px;
+    object-fit: cover;
+    transition: transform 0.3s;
+}
+
+.book_detail_image img:hover {
+    transform: scale(1.05);
+}
+
+.book_detail_info {
+    flex: 1; 
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 15px;
+}
+
+.book_detail_info h2 {
+    font-size: 32px;
+    color: #4caf50;
+    margin-bottom: 10px;
+}
+
+.book_detail_info p {
+    font-size: 16px;
+    color: #333;
+    margin: 5px 0;
+}
+
+.book_detail_info strong {
+    color: #000;
+}
+
+.add_to_cart_btn {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #4caf50;
+    color: white;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    border: none;
+    transition: background-color 0.3s, transform 0.2s;
+    margin-top: 10px;
+    text-decoration: none;
+    text-align: center;
+}
+
+.add_to_cart_btn:hover {
+    background-color: #388e3c;
+    transform: scale(1.05);
+}
+
+@media(max-width: 768px){
+    .book_detail_container {
+        flex-direction: column;
+        align-items: center;
+        padding: 30px 10px;
+    }
+
+    .book_detail_image {
+        flex: none;
+        max-width: 90%;
+    }
+
+    .book_detail_info {
+        text-align: center;
+    }
+}
+</style>
+
+<div class="book_detail_container">
+    <div class="book_detail_image">
+        <img src="{{ url_for('static', filename='Book_Image/' + book.image_file) }}" alt="{{ book.title }}">
+    </div>
+    <div class="book_detail_info">
+        <h2>{{ book.title }}</h2>
+        <p><strong>Author:</strong> {{ book.author }}</p>
+        <p><strong>Price:</strong> &#8377;{{ book.price }}</p>
+        <p><strong>Available:</strong> {{ book.piece }}</p>
+        <p><strong>Publisher:</strong> {{ book.publication }}</p>
+        <p><strong>Publication Date:</strong> {{ book.publication_date }}</p>
+        <p><strong>Language:</strong> {{ book.language }}</p>
+        <p><strong>Reading Age:</strong> {{ book.reading_age }}</p>
+        <p><strong>Content:</strong> {{ book.content }}</p>
+    </div>
+</div>
+
+{% endblock %}

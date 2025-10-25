@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}BookStore{% endblock %}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+nav {
+    background-color: #4caf50;
+    padding: 12px 25px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.nav-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.logo {
+    font-size: 22px;
+    font-weight: bold;
+    color: #fff;
+    text-decoration: none;
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 18px;
+    transition: all 0.3s ease-in-out;
+}
+
+.nav-links li a {
+    text-decoration: none;
+    color: #fff;
+    font-weight: 500;
+    transition: color 0.3s;
+}
+
+.nav-links li a:hover {
+    color: #222;
+}
+
+.cart-badge {
+    background: red;
+    color: #fff;
+    font-size: 12px;
+    padding: 2px 6px;
+    border-radius: 50%;
+    margin-left: 6px;
+}
+
+.menu-toggle {
+    display: none;
+    font-size: 26px;
+    color: #fff;
+    cursor: pointer;
+    background: none;
+    border: none;
+}
+
+.content {
+    flex: 1;
+    width: 90%;
+    max-width: 1400px;
+    margin: 20px auto;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.flash_message {
+    display: inline-block;
+    padding: 6px 12px; 
+    border-radius: 5px;
+    margin: 10px 0;
+    text-align: center;
+    color: #fff;
+    font-weight: 500;
+    font-size: 13px;
+    max-width: fit-content; 
+}
+
+.flash_message.success { background-color: #4caf50; }
+.flash_message.warning { background-color: #ff9800; }
+.flash_message.danger, .flash_message.error { background-color: #f44336; }
+.flash_message.info { background-color: #2196f3; }
+
+.footer_container {
+    background-color: #333;
+    color: #eee;
+    text-align: center;
+    padding: 18px 10px;
+    margin-top: auto;
+}
+
+.footer_container p {
+    margin: 6px 0;
+    font-size: 14px;
+}
+
+.footer_socials {
+    margin-top: 8px;
+}
+
+.footer_socials a {
+    color: #eee;
+    margin: 0 8px;
+    font-size: 18px;
+    transition: color 0.3s;
+}
+
+.footer_socials a:hover {
+    color: #4caf50;
+}
+
+@media (max-width: 768px) {
+    .menu-toggle {
+        display: block;
+    }
+
+    .nav-links {
+        flex-direction: column;
+        align-items: center;
+        background-color: #388e3c;
+        width: 100%;
+        position: absolute;
+        top: 60px;
+        left: 0;
+        display: none;
+        padding: 15px 0;
+        gap: 10px;
+    }
+
+    .nav-links.active {
+        display: flex;
+    }
+
+    .nav-links li a {
+        font-size: 16px;
+        padding: 8px 0;
+    }
+
+    .content {
+        width: 95%;
+        padding: 15px;
+    }
+
+    .flash_message {
+        font-size: 12px;
+        padding: 5px 10px;
+        margin: 8px 0;
+    }
+}
+</style>
+<script>
+function toggleMenu() {
+    document.getElementById("navLinks").classList.toggle("active");
+}
+</script>
+</head>
+<body>
+    <nav>
+        <div class="nav-container">
+            <a href="{{ url_for('main.home') }}" class="logo"><i class="fas fa-book"></i> BookStore</a>
+            <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+            <ul class="nav-links" id="navLinks">
+                {% if current_user.is_authenticated %}
+                    {% if current_user.is_admin %}
+                        <li><a href="{{ url_for('admin.dashboard') }}">Admin Dashboard</a></li>
+                        <li><a href="{{ url_for('admin.view_orders') }}">Manage Orders</a></li>
+                        <li><a href="{{ url_for('admin.manage_users') }}">Manage Users</a></li>
+                        <li><a href="{{ url_for('admin.manage_books') }}">Manage Books</a></li>
+                    {% else %}
+                        <li><a href="{{ url_for('main.home') }}">Home</a></li>
+                        <li><a href="{{ url_for('main.books') }}">Books</a></li>
+                        <li>
+                            <a href="{{ url_for('main.cart') }}">
+                                <i class="fas fa-shopping-cart"></i> Cart
+                                {% set cart_count = current_user.carts|length %}
+                                {% if cart_count > 0 %}
+                                <span class="cart-badge">{{ cart_count }}</span>
+                                {% endif %}
+                            </a>
+                        </li>
+                        <li><a href="{{ url_for('main.orders') }}">My Orders</a></li>
+                        <li><a href="{{ url_for('main.account') }}">Account</a></li>
+                    {% endif %}
+                    <li><a href="{{ url_for('main.logout') }}">Logout</a></li>
+                {% else %}
+                    <li><a href="{{ url_for('main.home') }}">Home</a></li>
+                    <li><a href="{{ url_for('main.books') }}">Books</a></li>
+                    <li><a href="{{ url_for('main.login') }}">Login</a></li>
+                    <li><a href="{{ url_for('main.register') }}">Register</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+
+    <div class="content">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="flash_message {{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+        {% endwith %}
+        
+        {% block content %}{% endblock %}
+    </div>
+
+    <footer class="footer_container">
+        <p>&copy; {{ current_year or "2025" }} BookStore. All rights reserved.</p>
+        <div class="footer_socials">
+            <a href="#"><i class="fab fa-facebook-f"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,107 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="orders-container">
+  <h2 class="orders-title">All Orders</h2>
+
+  <table class="orders-table">
+    <thead>
+      <tr>
+        <th>Order ID</th>
+        <th>User</th>
+        <th>Total Price</th>
+        <th>Status</th>
+        <th>Date</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for order in orders %}
+      <tr>
+        <td>{{ order.id }}</td>
+        <td>{{ order.buyer.username }}</td>
+        <td>${{ order.amount }}</td>
+        <td>
+          <form method="POST" action="{{ url_for('admin.update_order_status', order_id=order.id) }}">
+            <select name="status" class="status-select" onchange="this.form.submit()">
+              <option value="Pending" {% if order.status == "Pending" %}selected{% endif %}>Pending</option>
+              <option value="Shipped" {% if order.status == "Shipped" %}selected{% endif %}>Shipped</option>
+              <option value="Delivered" {% if order.status == "Delivered" %}selected{% endif %}>Delivered</option>
+              <option value="Cancelled" {% if order.status == "Cancelled" %}selected{% endif %}>Cancelled</option>
+            </select>
+          </form>
+        </td>
+        <td>{{ order.order_date.strftime('%Y-%m-%d') }}</td>
+        <td>
+          <a href="{{ url_for('admin.order_details', order_id=order.id) }}" class="details-btn">Details</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<style>
+.orders-container {
+  max-width: 1000px;
+  margin: 40px auto;
+  padding: 20px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.orders-title {
+  text-align: center;
+  margin-bottom: 25px;
+  font-size: 26px;
+  color: #333;
+  letter-spacing: 0.5px;
+}
+
+.orders-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.orders-table th, .orders-table td {
+  padding: 12px 10px;
+  text-align: center;
+  border-bottom: 1px solid #ddd;
+}
+
+.orders-table th {
+  background: #f8f8f8;
+  color: #444;
+  font-weight: 600;
+}
+
+.status-select {
+  padding: 5px 10px;
+  border-radius: 8px;
+  border: 1px solid #bbb;
+  font-size: 14px;
+  cursor: pointer;
+  outline: none;
+  transition: 0.3s;
+}
+
+.status-select:hover {
+  border-color: #4a90e2;
+}
+
+.details-btn {
+  display: inline-block;
+  padding: 6px 14px;
+  background: #4a90e2;
+  color: white;
+  text-decoration: none;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: 0.3s;
+}
+
+.details-btn:hover {
+  background: #3b7ac0;
+}
+</style>
+{% endblock %}

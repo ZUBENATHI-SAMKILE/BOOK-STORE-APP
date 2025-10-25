@@ -1,0 +1,130 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="users_container">
+
+  <h2 class="users_title">
+    <i class="fas fa-users"></i> Manage Users
+  </h2>
+
+  <table class="users_table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Email</th>
+        <th>Name</th>
+        <th>Role</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for user in users %}
+      <tr>
+        <td>{{ user.id }}</td>
+        <td>{{ user.email }}</td>
+        <td>{{ user.username }}</td>
+        <td>
+          {% if user.is_admin %}
+            <span class="role_badge admin">Admin</span>
+          {% else %}
+            <span class="role_badge user">User</span>
+          {% endif %}
+        </td>
+        <td>
+          <a href="{{ url_for('admin.promote_user', user_id=user.id) }}" class="action_btn promote" title="Promote User">
+            <i class="fas fa-arrow-up"></i>
+          </a>
+          <a href="{{ url_for('admin.demote_user', user_id=user.id) }}" class="action_btn demote" title="Demote User">
+            <i class="fas fa-arrow-down"></i>
+          </a>
+          <a href="{{ url_for('admin.delete_user', user_id=user.id) }}" class="action_btn delete" title="Delete User">
+            <i class="fas fa-trash"></i>
+          </a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<style>
+.users_container {
+  max-width: 1000px;
+  margin: 40px auto;
+  padding: 25px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  font-family: "Poppins", sans-serif;
+}
+.users_title {
+  text-align: center;
+  margin-bottom: 25px;
+  font-size: 26px;
+  color: #333;
+}
+.users_title i {
+  color: #4caf50;
+  margin-right: 8px;
+}
+
+.users_table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.users_table th, .users_table td {
+  padding: 12px 10px;
+  text-align: center;
+  border-bottom: 1px solid #ddd;
+}
+.users_table th {
+  background: #f8f8f8;
+  color: #444;
+  font-weight: 600;
+}
+.role_badge {
+  padding: 5px 10px;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 13px;
+}
+.role_badge.admin { background-color: #4caf50; }
+.role_badge.user { background-color: #888; }
+
+.action_btn {
+  display: inline-block;
+  padding: 7px 10px;
+  border-radius: 6px;
+  text-decoration: none;
+  margin: 0 3px;
+  transition: 0.3s;
+  color: #fff;
+  position: relative;
+}
+.action_btn i {
+  font-size: 14px;
+}
+.action_btn.promote { background-color: #007bff; }
+.action_btn.demote { background-color: #ff9800; }
+.action_btn.delete { background-color: #f44336; }
+
+.action_btn:hover {
+  transform: scale(1.1);
+  opacity: 0.9;
+}
+.action_btn[title]:hover::after {
+  content: attr(title);
+  position: absolute;
+  top: -35px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0,0,0,0.85);
+  color: #fff;
+  padding: 4px 8px;
+  border-radius: 5px;
+  font-size: 12px;
+  white-space: nowrap;
+  opacity: 1;
+  transition: opacity 0.2s ease;
+}
+</style>
+{% endblock %}

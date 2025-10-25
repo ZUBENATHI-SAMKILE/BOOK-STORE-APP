@@ -1,0 +1,157 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="login_container">
+    <h2>Login</h2>
+    <form method="POST" class="login_form">
+        {{ form.hidden_tag() }}
+
+        <div class="form_group">
+            <label class="form_label">{{ form.email.label.text }} <i class="fas fa-envelope input_icon"></i></label>
+            <div class="input_group">
+                {{ form.email(class="form_input") }}
+            </div>
+        </div>
+
+        <div class="form_group">
+            <label class="form_label">{{ form.password.label.text }} <i class="fas fa-lock input_icon"></i></label>
+            <div class="input_group password_group">
+                {{ form.password(class="form_input", id="password") }}
+                <i class="fas fa-eye toggle_password" id="togglePassword"></i>
+            </div>
+        </div>
+
+        <div class="form_group remember_group">
+            {{ form.remember(class="form_checkbox") }}
+            {{ form.remember.label(class="form_label") }}
+        </div>
+
+        <div class="form_group">
+            {{ form.submit(class="btn_submit") }}
+        </div>
+    </form>
+</div>
+
+<style>
+
+.login_container {
+    max-width: 400px;
+    margin: 50px auto;
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+    text-align: center;
+    font-family: Arial, sans-serif;
+}
+
+.login_container h2 {
+    color: #4caf50;
+    margin-bottom: 25px;
+}
+
+.login_form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.form_group {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+}
+
+.form_label {
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #333;
+}
+
+.input_group {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input_icon {
+    margin-right: 10px;
+    color: #4caf50;
+    font-size: 18px;
+}
+
+.form_input {
+    flex: 1;
+    padding: 10px 12px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    transition: border-color 0.3s;
+}
+
+.form_input:focus {
+    border-color: #4caf50;
+    outline: none;
+}
+
+.password_group {
+    position: relative;
+}
+
+.toggle_password {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #4caf50;
+}
+
+.remember_group {
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+}
+
+.form_checkbox {
+    width: 16px;
+    height: 16px;
+}
+
+.btn_submit {
+    background-color: #4caf50;
+    color: white;
+    padding: 10px 0;
+    border-radius: 6px;
+    border: none;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.btn_submit:hover {
+    background-color: #388e3c;
+    transform: scale(1.02);
+}
+
+@media (max-width: 480px) {
+    .login_container {
+        margin: 30px 20px;
+        padding: 20px;
+    }
+}
+</style>
+
+<script src="https://kit.fontawesome.com/your-kit-code.js" crossorigin="anonymous"></script>
+
+<script>
+const togglePassword = document.getElementById('togglePassword');
+const password = document.getElementById('password');
+
+togglePassword.addEventListener('click', () => {
+    const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+    password.setAttribute('type', type);
+    togglePassword.classList.toggle('fa-eye-slash');
+});
+</script>
+{% endblock %}

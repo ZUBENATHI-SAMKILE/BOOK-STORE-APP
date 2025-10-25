@@ -1,0 +1,185 @@
+<div class="book_card" data-book-id="{{ book.id }}">
+  <a href="{{ url_for('main.book_detail', book_id=book.id) }}" class="book_image_wrapper">
+    <img src="{{ url_for('static', filename='Book_Image/' + book.image_file) }}" 
+    class="book_image" alt="{{ book.title }}">
+  </a>
+
+  <div class="book_body">
+    <h5 class="book_title">{{ book.title }}</h5>
+    <p class="book_author">{{ book.author }}</p>
+    <p class="book_price">&#8377;{{ book.price }}</p>
+
+    {% if current_user.is_authenticated %}
+    {% set cart_item = (carts | selectattr("book_id", "equalto", book.id) | first) %}
+    <div class="quantity_controls" data-book-id="{{ book.id }}">
+        <button class="minus_btn" {% if not cart_item or cart_item.quantity == 0 %}disabled{% endif %}>-</button>
+        <span class="qty">{{ cart_item.quantity if cart_item else 0 }}</span>
+        <button class="plus_btn">+</button>
+    </div>
+    <form action="{{ url_for('main.books') }}" method="GET">
+        <button type="submit" class="add_to_cart_btn">Add to Cart</button>
+    </form>
+    {% endif %}
+  </div>
+</div>
+
+<style>
+
+.book_card {
+    background-color: #fff;
+    width: 250px; 
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fade_in_up 0.5s forwards;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    margin-bottom: 20px;
+}
+
+.book_card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 8px 18px rgba(0,0,0,0.15);
+}
+
+.book_image_wrapper {
+    display: block;
+    width: 100%;
+    height: 0;
+    padding-bottom: 105%; 
+    overflow: hidden;
+    position: relative;
+}
+
+.book_image_wrapper img.book_image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s;
+    border-bottom: 1px solid #eee;
+}
+
+.book_image_wrapper:hover img.book_image {
+    transform: scale(1.05);
+}
+
+.book_body {
+    padding: 12px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.book_title {
+    font-size: 16px;
+    font-weight: bold;
+    margin: 0;
+    color: #333;
+}
+
+.book_author {
+    font-size: 13px;
+    color: #666;
+    margin: 0;
+}
+
+.book_price {
+    font-size: 15px;
+    color: #4caf50;
+    font-weight: bold;
+}
+
+.quantity_controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-top: 5px;
+}
+
+.quantity_controls button {
+    background-color: #f44336;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 4px 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.quantity_controls button.plus_btn {
+    background-color: #4caf50;
+}
+
+.quantity_controls button:hover:not(:disabled) {
+    opacity: 0.85;
+}
+
+.quantity_controls button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.quantity_controls span {
+    font-weight: bold;
+    min-width: 18px;
+    display: inline-block;
+    text-align: center;
+}
+
+.add_to_cart_btn {
+    display: inline-block;
+    padding: 8px 16px;
+    background-color: #4caf50;
+    color: white;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    border: none;
+    transition: background-color 0.3s, transform 0.2s;
+    margin-top: 8px;
+}
+
+.add_to_cart_btn:hover {
+    background-color: #388e3c;
+    transform: scale(1.05);
+}
+
+@keyframes fade_in_up {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media(max-width: 768px){
+    .book_card {
+        width: 45%;
+    }
+}
+
+@media(max-width: 480px){
+    .book_card {
+        width: 90%;
+    }
+}
+</style>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const cards = document.querySelectorAll(".book_card");
+  cards.forEach((card, index) => {
+    card.style.animationDelay = `${index * 0.1}s`;
+  });
+});
+</script>

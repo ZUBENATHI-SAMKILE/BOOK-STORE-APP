@@ -1,0 +1,144 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="order_details_container">
+  <h2 class="order_title">
+    <i class="fas fa-file-invoice-dollar"></i> Order #{{ order.id }}
+  </h2>
+
+  <div class="order_info">
+    <p><strong><i class="fas fa-user"></i> User:</strong> {{ order.buyer.username }}</p>
+    <p><strong><i class="fas fa-info-circle"></i> Status:</strong> 
+      <span class="status_badge 
+        {% if order.status == 'Pending' %}pending
+        {% elif order.status == 'Shipped' %}shipped
+        {% elif order.status == 'Delivered' %}delivered
+        {% elif order.status == 'Cancelled' %}cancelled{% endif %}">
+        {{ order.status }}
+      </span>
+    </p>
+    <p><strong><i class="fas fa-coins"></i> Total Price:</strong> 
+      <span class="total_price">${{ total }}</span>
+    </p>
+    <p><strong><i class="fas fa-calendar-alt"></i> Date:</strong> {{ order.order_date.strftime('%Y-%m-%d') }}</p>
+  </div>
+
+  <h3 class="items_title"><i class="fas fa-boxes"></i> Items</h3>
+  <ul class="items_list">
+    {% for item in order.items %}
+      <li>
+        <i class="fas fa-book"></i> {{ item.book.title }} 
+        — <span>{{ item.quantity }} pcs</span> — 
+        <strong>${{ item.price }}</strong>
+      </li>
+    {% endfor %}
+  </ul>
+
+  <a href="{{ url_for('admin.view_orders') }}" class="back_btn">
+    <i class="fas fa-arrow-left"></i> Back to Orders
+  </a>
+</div>
+
+<style>
+.order_details_container {
+  width: 90%;
+  max-width: 800px;
+  margin: 40px auto;
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  padding: 25px 30px;
+  font-family: "Poppins", sans-serif;
+  animation: fade_in 0.6s ease;
+}
+
+.order_title {
+  text-align: center;
+  color: #4caf50;
+  font-size: 24px;
+  margin-bottom: 25px;
+}
+
+.order_title i {
+  color: #4caf50;
+  margin-right: 8px;
+}
+
+.order_info p {
+  font-size: 16px;
+  margin: 10px 0;
+  color: #333;
+}
+
+.status_badge {
+  padding: 3px 10px;
+  border-radius: 8px;
+  font-weight: bold;
+  color: #fff;
+  margin-left: 5px;
+}
+
+.status_badge.pending { background: #ffc107; color: #222; }
+.status_badge.shipped { background: #2196f3; }
+.status_badge.delivered { background: #4caf50; }
+.status_badge.cancelled { background: #f44336; }
+
+.total_price {
+  color: #4caf50;
+  font-weight: 700;
+}
+
+.items_title {
+  margin-top: 25px;
+  color: #333;
+  font-size: 20px;
+  margin-bottom: 15px;
+}
+
+.items_title i {
+  color: #4caf50;
+  margin-right: 8px;
+}
+
+.items_list {
+  list-style: none;
+  padding: 0;
+}
+
+.items_list li {
+  padding: 10px 15px;
+  border-bottom: 1px solid #eee;
+  font-size: 16px;
+  color: #444;
+}
+
+.items_list li i {
+  color: #4caf50;
+  margin-right: 8px;
+}
+
+.items_list li strong {
+  color: #388e3c;
+}
+
+.back_btn {
+  display: inline-block;
+  background-color: #4caf50;
+  color: white;
+  text-decoration: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  margin-top: 25px;
+  transition: background 0.3s, transform 0.2s;
+}
+
+.back_btn:hover {
+  background-color: #388e3c;
+  transform: scale(1.05);
+}
+
+@keyframes fade_in {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+</style>
+{% endblock %}

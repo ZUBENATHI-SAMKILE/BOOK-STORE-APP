@@ -1,0 +1,181 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="order_detail_container">
+  <h2 class="order_title">
+    <i class="fas fa-receipt"></i> Order {{ order.id }}
+  </h2>
+
+  <div class="order_info">
+    <p><strong>Status:</strong> 
+      <span class="order_status 
+        {% if order.status == 'Pending' %}status_pending{% elif order.status == 'Shipped' %}status_shipped
+        {% elif order.status == 'Delivered' %}status_delivered{% elif order.status == 'Cancelled' %}status_cancelled{% endif %}">
+        <i class="fas fa-circle"></i> {{ order.status }}
+      </span>
+    </p>
+    <br>
+    <p><strong>Total:</strong> 
+      <span class="total_price">&#8377;{{ total }}</span>
+    </p>
+  </div>
+
+  <table class="order_table">
+    <thead>
+      <tr>
+        <th>Book</th>
+        <th>Price</th>
+        <th>Quantity</th>
+        <th>Subtotal</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for ob in orderbooks %}
+      <tr class="table_row">
+        <td><i class="fas fa-book"></i> {{ ob.book.title }}</td>
+        <td>&#8377;{{ ob.book.price }}</td>
+        <td>{{ ob.quantity }}</td>
+        <td>&#8377;{{ ob.book.price * ob.quantity }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <a href="{{ url_for('main.orders') }}" class="btn_back">
+    <i class="fas fa-arrow-left"></i> Back to Orders
+  </a>
+</div>
+
+<style>
+  .order_detail_container {
+    max-width: 850px;
+    margin: 40px auto;
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    font-family: Arial, sans-serif;
+    animation: fade_in 0.6s ease;
+  }
+
+  .order_title {
+    font-size: 26px;
+    text-align: center;
+    margin-bottom: 25px;
+    color: #4caf50;
+  }
+
+  .order_title i {
+    color: #4caf50;
+    margin-right: 8px;
+  }
+
+  .order_info {
+    margin-bottom: 20px;
+    font-size: 16px;
+    color: #333;
+  }
+
+  .order_status {
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-weight: bold;
+    
+  }
+
+  .status_pending {
+    background: #ffeb99;
+    color: #856404;
+  }
+
+  .status_shipped {
+    background: #b3e5fc;
+    color: #0277bd;
+  }
+
+  .status_delivered {
+    background: #c8e6c9;
+    color: #2e7d32;
+  }
+
+  .status_cancelled {
+    background: #ffcdd2;
+    color: #c62828;
+  }
+
+  .total_price {
+    color: #4caf50;
+    font-size: 18px;
+    font-weight: bold;
+    animation: pulse 1.8s infinite;
+  }
+
+  .order_table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background: #fff;
+  }
+
+  .order_table th, .order_table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+  }
+
+  .order_table th {
+    background: #4caf50;
+    color: #fff;
+  }
+
+  .table_row:hover {
+    background: #f1f8e9;
+    transition: background-color 0.3s ease;
+  }
+
+  .btn_back {
+    display: inline-block;
+    margin-top: 25px;
+    background: #4caf50;
+    color: #fff;
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-weight: bold;
+    transition: background-color 0.3s, transform 0.2s;
+  }
+
+  .btn_back:hover {
+    background: #43a047;
+    transform: translateY(-2px);
+  }
+
+  .btn_back i {
+    margin-right: 8px;
+  }
+
+  @keyframes fade_in {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes pulse {
+    0%, 100% { color: #4caf50; }
+    50% { color: #66bb6a; }
+  }
+
+  @media(max-width: 768px){
+    .order_detail_container {
+      padding: 20px;
+    }
+
+    .order_title {
+      font-size: 22px;
+    }
+
+    .btn_back {
+      width: 100%;
+      text-align: center;
+    }
+  }
+</style>
+{% endblock %}

@@ -1,0 +1,170 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<style>
+h2 {
+    text-align: center;
+    font-size: 32px;
+    color: #4caf50;
+    margin: 30px 0;
+    font-family: Arial, sans-serif;
+}
+
+.orders_container {
+    max-width: 1000px;
+    margin: 0 auto 50px;
+    padding: 0 20px;
+    font-family: Arial, sans-serif;
+}
+
+.orders_empty {
+    text-align: center;
+    font-size: 18px;
+    color: #555;
+    padding: 20px;
+    border: 2px dashed #4caf50;
+    border-radius: 10px;
+    margin-top: 20px;
+}
+
+.orders_table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.orders_table th, 
+.orders_table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.orders_table th {
+    background-color: #4caf50;
+    color: white;
+    font-weight: bold;
+}
+
+.orders_table tr {
+    opacity: 0;
+    transform: translateY(15px);
+    animation: fade_in_up 0.5s forwards;
+}
+
+.orders_table tr:hover {
+    background-color: #f9f9f9;
+}
+
+.status_badge {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: bold;
+    color: white;
+    text-transform: uppercase;
+}
+
+.status_pending {
+    background-color: #ff9800;
+}
+
+.status_shipped {
+    background-color: #2196f3;
+}
+
+.status_delivered {
+    background-color: #4caf50;
+}
+
+.status_cancelled {
+    background-color: #f44336;
+}
+
+.view_btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background-color: #4caf50;
+    color: white;
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-size: 14px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.view_btn:hover {
+    background-color: #388e3c;
+    transform: scale(1.05);
+}
+
+@keyframes fade_in_up {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 768px) {
+    .orders_table th, .orders_table td {
+        padding: 8px 10px;
+        font-size: 14px;
+    }
+
+    .view_btn {
+        padding: 8px 12px;
+    }
+}
+</style>
+
+<div class="orders_container">
+    <h2><i class="fas fa-box-open"></i> My Orders</h2>
+
+    {% if not orders %}
+    <div class="orders_empty">
+        <i class="fas fa-info-circle"></i> No orders found.
+    </div>
+    {% else %}
+    <table class="orders_table">
+        <thead>
+            <tr>
+                <th>Order Number</th>
+                <th>Total Price</th>
+                <th>Status</th>
+                <th>Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in orders %}
+            <tr>
+                <td>{{ order.id }}</td>
+                <td>&#8377;{{ order.amount }}</td>
+                <td>
+                    {% if order.status == "Pending" %}
+                    <span class="status_badge status_pending">{{ order.status }}</span>
+                    {% elif order.status == "Shipped" %}
+                    <span class="status_badge status_shipped">{{ order.status }}</span>
+                    {% elif order.status == "Delivered" %}
+                    <span class="status_badge status_delivered">{{ order.status }}</span>
+                    {% elif order.status == "Cancelled" %}
+                    <span class="status_badge status_cancelled">{{ order.status }}</span>
+                    {% endif %}
+                </td>
+                <td>{{ order.order_date.strftime('%Y-%m-%d') }}</td>
+                <td>
+                    <a href="{{ url_for('main.detail', order_id=order.id) }}" class="view_btn">
+                        <i class="fas fa-eye"></i> View
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+</div>
+
+{% endblock %}

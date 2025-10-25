@@ -1,0 +1,119 @@
+{% extends "home.html" %}
+{% block title %}Admin Dashboard{% endblock %}
+{% block content %}
+<div class="admin_dashboard">
+  <h2 class="admin_title"><i class="fas fa-tachometer-alt"></i> Admin Dashboard</h2>
+
+  <div class="dashboard_grid">
+    <div class="dashboard_card">
+      <i class="fas fa-shopping-cart dashboard_icon"></i>
+      <h3 class="dashboard_number">{{ total_orders }}</h3>
+      <p>Orders</p>
+      <a href="{{ url_for('admin.view_orders') }}" class="dashboard_btn">Manage Orders</a>
+    </div>
+
+    <div class="dashboard_card">
+      <i class="fas fa-book dashboard_icon"></i>
+      <h3 class="dashboard_number">{{ total_books }}</h3>
+      <p>Books</p>
+      <a href="{{ url_for('admin.manage_books') }}" class="dashboard_btn">Manage Books</a>
+    </div>
+
+    <div class="dashboard_card">
+      <i class="fas fa-users dashboard_icon"></i>
+      <h3 class="dashboard_number">{{ total_users }}</h3>
+      <p>Users</p>
+      <a href="{{ url_for('admin.manage_users') }}" class="dashboard_btn">Manage Users</a>
+    </div>
+  </div>
+</div>
+
+<style>
+
+.admin_dashboard {
+  width: 90%;
+  max-width: 1000px;
+  margin: 40px auto;
+  font-family: "Poppins", sans-serif;
+  text-align: center;
+  animation: fade_in 0.5s ease-in-out;
+}
+
+.admin_title {
+  color: #4caf50;
+  font-weight: bold;
+  margin-bottom: 40px;
+  font-size: 26px;
+}
+
+.admin_title i {
+  margin-right: 8px;
+  color: #4caf50;
+}
+
+.dashboard_grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 25px;
+  justify-content: center;
+}
+
+.dashboard_card {
+  background-color: #fff;
+  border-radius: 14px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  padding: 25px 20px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.dashboard_card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.dashboard_icon {
+  font-size: 45px;
+  color: #4caf50;
+  margin-bottom: 15px;
+  transition: transform 0.3s ease;
+}
+
+.dashboard_card:hover .dashboard_icon {
+  transform: scale(1.1);
+}
+
+.dashboard_number {
+  font-size: 30px;
+  color: #333;
+  font-weight: 700;
+  margin-bottom: 5px;
+}
+
+.dashboard_btn {
+  display: inline-block;
+  background-color: #4caf50;
+  color: #fff;
+  text-decoration: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: bold;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.dashboard_btn:hover {
+  background-color: #388e3c;
+  transform: scale(1.05);
+}
+
+@keyframes fade_in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media(max-width: 600px) {
+  .admin_dashboard {
+    width: 95%;
+  }
+}
+</style>
+{% endblock %}

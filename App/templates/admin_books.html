@@ -1,0 +1,138 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="books_container">
+
+  <h2 class="books_title">
+    <i class="fas fa-book"></i> Manage Books
+  </h2>
+
+  <a href="{{ url_for('admin.add_book') }}" class="add_book_btn">
+    <i class="fas fa-plus"></i> Add Book
+  </a>
+
+  <table class="books_table">
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Author</th>
+        <th>Price</th>
+        <th>Qty</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for book in books %}
+      <tr>
+        <td>{{ book.title }}</td>
+        <td>{{ book.author }}</td>
+        <td>&#8377;{{ book.price }}</td>
+        <td>{{ book.piece }}</td>
+        <td>
+          <a href="{{ url_for('admin.update_book', book_id=book.id) }}" class="action_btn update" title="Update Book">
+            <i class="fas fa-edit"></i>
+          </a>
+          <a href="{{ url_for('admin.delete_book', book_id=book.id) }}" class="action_btn delete" title="Delete Book">
+            <i class="fas fa-trash"></i>
+          </a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<style>
+.books_container {
+  max-width: 1000px;
+  margin: 40px auto;
+  padding: 25px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  font-family: "Poppins", sans-serif;
+}
+
+.books_title {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 26px;
+  color: #333;
+}
+.books_title i {
+  color: #4caf50;
+  margin-right: 8px;
+}
+
+.add_book_btn {
+  display: inline-block;
+  margin-bottom: 15px;
+  background-color: #4caf50;
+  color: #fff;
+  padding: 8px 15px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: 0.3s;
+}
+.add_book_btn i {
+  margin-right: 5px;
+}
+.add_book_btn:hover {
+  background-color: #388e3c;
+  transform: scale(1.05);
+}
+
+.books_table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.books_table th, .books_table td {
+  padding: 12px 10px;
+  text-align: center;
+  border-bottom: 1px solid #ddd;
+}
+.books_table th {
+  background: #f8f8f8;
+  color: #444;
+  font-weight: 600;
+}
+
+.action_btn {
+  display: inline-block;
+  padding: 7px 10px;
+  border-radius: 6px;
+  text-decoration: none;
+  margin: 0 3px;
+  transition: 0.3s;
+  color: #fff;
+  position: relative;
+}
+.action_btn i {
+  font-size: 14px;
+}
+
+.action_btn.update { background-color: #2196f3; }
+.action_btn.delete { background-color: #f44336; }
+
+.action_btn:hover {
+  transform: scale(1.1);
+  opacity: 0.9;
+}
+
+.action_btn[title]:hover::after {
+  content: attr(title);
+  position: absolute;
+  top: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0,0,0,0.85);
+  color: #fff;
+  padding: 4px 8px;
+  border-radius: 5px;
+  font-size: 12px;
+  white-space: nowrap;
+  opacity: 1;
+  transition: opacity 0.2s ease;
+}
+</style>
+{% endblock %}
