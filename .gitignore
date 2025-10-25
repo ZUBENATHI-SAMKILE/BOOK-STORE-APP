@@ -8,22 +8,8 @@ __pycache__/
 .env
 .venv/
 
-
-# static files
-static/ Book_Image/*
-static/ Profile_Image/*
-!static/videos/.gitkeep
-
-# Database 
-instance/
-*.bookstore.db
-
 # IDE files
 .vscode/    
 .idea/
 
-# Migrations
-migrations/
 
-# seed.py
-seed.py
