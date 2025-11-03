@@ -11,7 +11,7 @@ with app.app_context():
 
     # admin user with Werkzeug hash
     admin_pw = generate_password_hash("BookStore@223")
-    admin = User(username="admin", email="BookStoreAdmin@.com", is_admin=True)
+    admin = User(username="admin", email="BookStoreAdmin@admin.com", is_admin=True)
     admin.set_password_raw_hash(admin_pw)  
     db.session.add(admin)
 

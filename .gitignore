@@ -1,15 +1,40 @@
-# Python cache
+# Byte-compiled / optimized / DLL files
 __pycache__/
-*.pyc
-*.pyo
-*.pyd
+*.py[cod]
+*$py.class
+
+# Virtual environment
+venv/
+env/
+ENV/
+.venv/
+
+# Flask instance folder
+instance/
+*.db
+*.sqlite3
+
+# Pytest cache
+.pytest_cache/
+
+# Coverage reports
+htmlcov/
+.coverage
+.coverage.*
+
+# Logs
+*.log
+
+# IDEs and editors
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# OS files
+.DS_Store
+Thumbs.db
 
 # Environment variables
 .env
-.venv/
-
-# IDE files
-.vscode/    
-.idea/
-
-
+.env.*
