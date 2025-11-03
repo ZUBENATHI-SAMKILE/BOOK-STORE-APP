@@ -38,3 +38,7 @@ Thumbs.db
 # Environment variables
 .env
 .env.*
+
+
+#  init_db.page
+init_db.py
