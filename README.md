@@ -1,0 +1,2 @@
+- password is [123456789]
+- email is [samkilezubenathi@gmail.com]
